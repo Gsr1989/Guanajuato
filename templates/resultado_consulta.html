@@ -30,30 +30,27 @@
             font-size: 22px;
             font-weight: bold;
             margin-top: 30px;
-            padding: 10px;
+            padding: 15px;
             border-radius: 10px;
             width: 90%;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+            background-color: #003366;
             color: white;
         }
 
-        .verde {
-            background-color: #28a745;
-        }
-
         .vencido {
-            background-color: #b38b00;
+            background-color: #b38b00 !important;
         }
 
         .no-encontrado {
-            background-color: #a00000;
+            background-color: #a00000 !important;
         }
 
         .certificado {
             border: 2px solid #cce6f5;
-            padding: 20px;
+            padding: 30px 20px;
             border-radius: 12px;
             width: 90%;
             max-width: 600px;
@@ -63,14 +60,17 @@
         }
 
         .dato {
-            margin: 10px 0;
+            margin-bottom: 25px;
             font-size: 16px;
-            border-bottom: 1px dashed #b3d9f2;
-            padding-bottom: 6px;
+            text-align: left;
         }
 
-        .dato:last-child {
-            border-bottom: none;
+        .dato strong {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .valido {
@@ -134,20 +134,41 @@
             FOLIO {{ resultado.folio }} : VENCIDO
         </div>
     {% else %}
-        <div class="estado verde">
+        <div class="estado">
             FOLIO {{ resultado.folio }} : VIGENTE
         </div>
     {% endif %}
 
     {% if resultado.estado != "No encontrado" %}
     <div class="certificado">
-        <div class="dato"><strong>Fecha de Expedición:</strong> {{ resultado.fecha_expedicion }}</div>
-        <div class="dato"><strong>Fecha de Vencimiento:</strong> {{ resultado.fecha_vencimiento }}</div>
-        <div class="dato"><strong>Marca:</strong> {{ resultado.marca }}</div>
-        <div class="dato"><strong>Línea:</strong> {{ resultado.linea }}</div>
-        <div class="dato"><strong>Año:</strong> {{ resultado.año }}</div>
-        <div class="dato"><strong>Número de Serie:</strong> {{ resultado.numero_serie }}</div>
-        <div class="dato"><strong>Número de Motor:</strong> {{ resultado.numero_motor }}</div>
+        <div class="dato">
+            <strong>Fecha de Expedición:</strong>
+            {{ resultado.fecha_expedicion }}
+        </div>
+        <div class="dato">
+            <strong>Fecha de Vencimiento:</strong>
+            {{ resultado.fecha_vencimiento }}
+        </div>
+        <div class="dato">
+            <strong>Marca:</strong>
+            {{ resultado.marca }}
+        </div>
+        <div class="dato">
+            <strong>Línea:</strong>
+            {{ resultado.linea }}
+        </div>
+        <div class="dato">
+            <strong>Año:</strong>
+            {{ resultado.año }}
+        </div>
+        <div class="dato">
+            <strong>Número de Serie:</strong>
+            {{ resultado.numero_serie }}
+        </div>
+        <div class="dato">
+            <strong>Número de Motor:</strong>
+            {{ resultado.numero_motor }}
+        </div>
     </div>
     {% endif %}
 
