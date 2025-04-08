@@ -6,38 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Georgia', serif;
             margin: 0;
             background-color: #fff;
         }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 30px;
-        }
+
         header img {
-            height: 80px;
+            width: 100%;
+            display: block;
         }
-        h1 {
+
+        .titulo {
             text-align: center;
-            font-size: 28px;
-            margin-top: 30px;
-            color: #222;
+            font-size: 26px;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #003366;
         }
+
         main {
             max-width: 500px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px 20px;
             text-align: center;
         }
+
         input[type="text"] {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border-radius: 6px;
             border: 1px solid #ccc;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            font-size: 16px;
         }
+
         button {
             background-color: #800000;
             color: white;
@@ -47,24 +49,23 @@
             font-size: 16px;
             cursor: pointer;
         }
+
         button:hover {
             background-color: #a00000;
         }
-        footer {
-            margin-top: 40px;
-            width: 100%;
-        }
+
         footer img {
             width: 100%;
             display: block;
         }
+
         @media (max-width: 600px) {
-            header img {
-                height: 60px;
+            .titulo {
+                font-size: 22px;
+                margin-top: 16px;
             }
-            h1 {
-                font-size: 24px;
-                margin-top: 20px;
+            main {
+                padding: 20px 10px;
             }
             button {
                 width: 100%;
@@ -73,12 +74,12 @@
     </style>
 </head>
 <body>
+
     <header>
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
-        <img src="{{ url_for('static', filename='sub_logo.png') }}" alt="Sub Logo">
+        <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Encabezado">
     </header>
 
-    <h1>Secretaría de Movilidad</h1>
+    <div class="titulo">RESULTADO DE CONSULTA DIGITAL</div>
 
     <main>
         <form action="/consulta_folio" method="POST">
@@ -88,7 +89,8 @@
     </main>
 
     <footer>
-        <img src="{{ url_for('static', filename='footer.png') }}" alt="Footer">
+        <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Pie de página">
     </footer>
+
 </body>
 </html>
