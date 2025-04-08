@@ -12,15 +12,9 @@
             padding: 0;
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 30px;
-        }
-
         header img {
-            height: 80px;
+            width: 100%;
+            display: block;
         }
 
         .titulo {
@@ -65,18 +59,24 @@
         }
 
         .certificado {
-            border: 2px solid #ccc;
+            border: 2px solid #87ceeb;
             padding: 20px;
             border-radius: 12px;
             width: 90%;
             max-width: 600px;
             margin: 30px auto;
-            background-color: #f2f2f2;
+            background-color: #e0f7ff;
         }
 
         .dato {
-            margin: 8px 0;
+            margin: 10px 0;
             font-size: 16px;
+            border-bottom: 1px solid #cceeff;
+            padding-bottom: 6px;
+        }
+
+        .dato:last-child {
+            border-bottom: none;
         }
 
         .valido {
@@ -95,7 +95,7 @@
         }
 
         .btn-regresar a {
-            background-color: #800000;
+            background-color: #66ccff;
             color: white;
             text-decoration: none;
             padding: 12px 20px;
@@ -105,12 +105,7 @@
         }
 
         .btn-regresar a:hover {
-            background-color: #a00000;
-        }
-
-        footer {
-            margin-top: 40px;
-            width: 100%;
+            background-color: #33bfff;
         }
 
         footer img {
@@ -119,9 +114,6 @@
         }
 
         @media (max-width: 600px) {
-            header img {
-                height: 60px;
-            }
             .titulo {
                 font-size: 20px;
             }
@@ -134,8 +126,7 @@
 <body>
 
     <header>
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
-        <img src="{{ url_for('static', filename='sub_logo.png') }}" alt="Sub Logo">
+        <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Encabezado">
     </header>
 
     <div class="titulo">Secretaría de Movilidad</div>
@@ -174,7 +165,7 @@
     </div>
 
     <footer>
-        <img src="{{ url_for('static', filename='footer.png') }}" alt="Footer">
+        <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Pie de página">
     </footer>
 
 </body>
