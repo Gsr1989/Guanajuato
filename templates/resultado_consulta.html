@@ -7,7 +7,7 @@
     <style>
         body {
             background-color: #ffffff;
-            font-family: Arial, sans-serif;
+            font-family: 'Georgia', serif;
             margin: 0;
             padding: 0;
         }
@@ -19,17 +19,10 @@
 
         .titulo {
             text-align: center;
-            font-size: 24px;
+            font-size: 26px;
             margin-top: 20px;
             font-weight: bold;
-            color: #222;
-        }
-
-        .subtitulo {
-            text-align: center;
-            font-size: 18px;
-            margin-top: 5px;
-            color: #444;
+            color: #003366;
         }
 
         .estado {
@@ -59,19 +52,20 @@
         }
 
         .certificado {
-            border: 2px solid #87ceeb;
+            border: 2px solid #cce6f5;
             padding: 20px;
             border-radius: 12px;
             width: 90%;
             max-width: 600px;
             margin: 30px auto;
-            background-color: #e0f7ff;
+            background-color: #e6f2fb;
+            color: #003366;
         }
 
         .dato {
             margin: 10px 0;
             font-size: 16px;
-            border-bottom: 1px solid #cceeff;
+            border-bottom: 1px dashed #b3d9f2;
             padding-bottom: 6px;
         }
 
@@ -83,7 +77,7 @@
             text-align: center;
             font-weight: bold;
             margin-top: 20px;
-            color: #333;
+            color: #003366;
         }
 
         .btn-regresar {
@@ -95,7 +89,7 @@
         }
 
         .btn-regresar a {
-            background-color: #66ccff;
+            background-color: #2a72a5;
             color: white;
             text-decoration: none;
             padding: 12px 20px;
@@ -105,7 +99,7 @@
         }
 
         .btn-regresar a:hover {
-            background-color: #33bfff;
+            background-color: #1e5b88;
         }
 
         footer img {
@@ -115,7 +109,7 @@
 
         @media (max-width: 600px) {
             .titulo {
-                font-size: 20px;
+                font-size: 22px;
             }
             .estado {
                 font-size: 20px;
@@ -129,8 +123,7 @@
         <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Encabezado">
     </header>
 
-    <div class="titulo">Secretaría de Movilidad</div>
-    <div class="subtitulo">Ciudad de México</div>
+    <div class="titulo">RESULTADO DE CONSULTA DIGITAL</div>
 
     {% if resultado.estado == "No encontrado" %}
         <div class="estado no-encontrado">
