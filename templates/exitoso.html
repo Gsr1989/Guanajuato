@@ -3,9 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <title>Registro Exitoso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background-color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px;
+        }
+
+        header img {
+            height: 70px;
+        }
+
+        .titulo {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #222;
+            margin-top: 10px;
+        }
+
+        .contenido {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .mensaje {
+            font-size: 20px;
+            color: green;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .boton {
+            background-color: #830000;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            text-decoration: none;
+        }
+
+        footer {
+            margin-top: 50px;
+            width: 100%;
+            text-align: center;
+        }
+
+        footer img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 600px) {
+            .titulo {
+                font-size: 20px;
+            }
+
+            .boton {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+
+            header img {
+                height: 55px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>Folio registrado exitosamente.</h2>
-    <a href="{{ url_for('static', filename='pdfs/' + folio + '.pdf') }}" download>Descargar PDF</a>
+
+<header>
+    <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Logo izquierda">
+    <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Logo derecha">
+</header>
+
+<div class="titulo">Secretaría de Movilidad - Registro Exitoso</div>
+
+<div class="contenido">
+    <p class="mensaje">Folio registrado correctamente.</p>
+    <a class="boton" href="{{ url_for('static', filename='pdfs/' + folio + '.pdf') }}" download>Descargar Comprobante PDF</a>
+</div>
+
+<footer>
+    <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Pie de página">
+</footer>
+
 </body>
 </html>
