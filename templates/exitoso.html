@@ -12,13 +12,9 @@
             padding: 0;
         }
 
-        header {
-            text-align: left;
-            padding: 10px 30px;
-        }
-
-        header img {
-            height: 70px;
+        header img, footer img {
+            width: 100%;
+            display: block;
         }
 
         .titulo {
@@ -26,7 +22,7 @@
             font-size: 24px;
             font-weight: bold;
             color: #222;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         .contenido {
@@ -49,6 +45,7 @@
             border-radius: 8px;
             font-size: 16px;
             text-decoration: none;
+            margin: 10px;
             display: inline-block;
         }
 
@@ -60,10 +57,6 @@
             .boton {
                 font-size: 14px;
                 padding: 10px 20px;
-            }
-
-            header img {
-                height: 55px;
             }
         }
     </style>
@@ -78,8 +71,13 @@
 
 <div class="contenido">
     <p class="mensaje">Folio registrado correctamente.</p>
+    <a class="boton" href="{{ url_for('static', filename='pdfs/' + folio + '.pdf') }}" download>Descargar Comprobante PDF</a>
     <a class="boton" href="{{ url_for('consulta_folio') }}">Consultar Folio</a>
 </div>
+
+<footer>
+    <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Pie de página">
+</footer>
 
 </body>
 </html>
