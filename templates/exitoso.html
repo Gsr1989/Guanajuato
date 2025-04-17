@@ -13,9 +13,7 @@
         }
 
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: left;
             padding: 10px 30px;
         }
 
@@ -40,7 +38,7 @@
             font-size: 20px;
             color: green;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .boton {
@@ -51,18 +49,7 @@
             border-radius: 8px;
             font-size: 16px;
             text-decoration: none;
-        }
-
-        footer {
-            margin-top: 50px;
-            width: 100%;
-            text-align: center;
-        }
-
-        footer img {
-            width: 100%;
-            max-width: 100%;
-            height: auto;
+            display: inline-block;
         }
 
         @media (max-width: 600px) {
@@ -84,20 +71,15 @@
 <body>
 
 <header>
-    <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Logo izquierda">
-    <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Logo derecha">
+    <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Encabezado">
 </header>
 
 <div class="titulo">Secretaría de Movilidad - Registro Exitoso</div>
 
 <div class="contenido">
     <p class="mensaje">Folio registrado correctamente.</p>
-    <a class="boton" href="{{ url_for('static', filename='pdfs/' + folio + '.pdf') }}" download>Descargar Comprobante PDF</a>
+    <a class="boton" href="{{ url_for('consulta_folio') }}">Consultar Folio</a>
 </div>
-
-<footer>
-    <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Pie de página">
-</footer>
 
 </body>
 </html>
