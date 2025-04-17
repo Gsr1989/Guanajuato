@@ -69,6 +69,22 @@ def crear_usuario():
 
     return render_template('crear_usuario.html')
 
+def generar_pdf(folio, numero_serie, fecha_expedicion):
+    try:
+        plantilla = "guanajuato.pdf"
+        fecha_texto = fecha_expedicion.strftime("%d/%m/%Y")
+        ruta_pdf = f"static/pdfs/{folio}.pdf"
+        os.makedirs("static/pdfs", exist_ok=True)
+        doc = fitz.open(plantilla)
+        page = doc[0]
+        page.insert_text((259.0, 180.0), numero_serie, fontsize=10, fontname="helv")
+        page.insert_text((259.0, 396.0), fecha_texto, fontsize=10, fontname="helv")
+        doc.save(ruta_pdf)
+        return True
+    except Exception as e:
+        print(f"ERROR al generar PDF: {e}")
+        return False
+
 @app.route('/registro_usuario', methods=['GET', 'POST'])
 def registro_usuario():
     if 'user_id' not in session:
@@ -118,21 +134,8 @@ def registro_usuario():
         supabase.table("folios_registrados").insert(data).execute()
         supabase.table("verificaciondigitalcdmx").update({"folios_usados": folios["folios_usados"] + 1}).eq("id", user_id).execute()
 
-        try:
-            plantilla = "guanajuato.pdf"
-            output_pdf = f"static/pdfs/{folio}.pdf"
-            fecha_texto = fecha_expedicion.strftime("%d/%m/%Y")
-            doc = fitz.open(plantilla)
-            page = doc[0]
-            page.insert_text((259.0, 180.0), numero_serie, fontsize=10, fontname="helv")
-            page.insert_text((259.0, 396.0), fecha_texto, fontsize=10, fontname="helv")
-            os.makedirs("static/pdfs", exist_ok=True)
-            doc.save(output_pdf)
-        except Exception as e:
-            print(f"ERROR al generar el PDF (usuario): {e}")
-
-        flash("Folio registrado correctamente.", "success")
-        return redirect(url_for('registro_usuario'))
+        generar_pdf(folio, numero_serie, fecha_expedicion)
+        return render_template("exitoso.html", folio=folio)
 
     response = supabase.table("verificaciondigitalcdmx").select("folios_asignac, folios_usados").eq("id", user_id).execute()
     folios_info = response.data[0] if response.data else {}
@@ -172,21 +175,8 @@ def registro_admin():
         }
 
         supabase.table("folios_registrados").insert(data).execute()
-
-        try:
-            plantilla = "guanajuato.pdf"
-            output_pdf = f"static/pdfs/{folio}.pdf"
-            fecha_texto = fecha_expedicion.strftime("%d/%m/%Y")
-            doc = fitz.open(plantilla)
-            page = doc[0]
-            page.insert_text((259.0, 180.0), numero_serie, fontsize=10, fontname="helv")
-            page.insert_text((259.0, 396.0), fecha_texto, fontsize=10, fontname="helv")
-            os.makedirs("static/pdfs", exist_ok=True)
-            doc.save(output_pdf)
-        except Exception as e:
-            print(f"ERROR al generar el PDF (admin): {e}")
-
-        flash('Folio registrado correctamente.', 'success')
+        generar_pdf(folio, numero_serie, fecha_expedicion)
+        return render_template("exitoso.html", folio=folio)
 
     return render_template('registro_admin.html')
 
