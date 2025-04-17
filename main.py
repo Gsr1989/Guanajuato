@@ -129,7 +129,7 @@ def registro_usuario():
             os.makedirs("documentos", exist_ok=True)
             doc.save(output_pdf)
         except Exception as e:
-            print(f"ERROR al generar el PDF (usuario): {e}")
+            flash(f'ERROR al generar el PDF (usuario): {e}', 'error')
 
         flash("Folio registrado correctamente.", "success")
         return redirect(url_for('registro_usuario'))
@@ -184,7 +184,7 @@ def registro_admin():
             os.makedirs("documentos", exist_ok=True)
             doc.save(output_pdf)
         except Exception as e:
-            print(f"ERROR al generar el PDF (admin): {e}")
+            flash(f'ERROR al generar el PDF (admin): {e}', 'error')
 
         flash('Folio registrado correctamente.', 'success')
 
