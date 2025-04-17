@@ -189,3 +189,44 @@ def registro_admin():
         flash('Folio registrado correctamente.', 'success')
 
     return render_template('registro_admin.html')
+
+@app.route('/consulta_folio', methods=['GET', 'POST'])
+def consulta_folio():
+    resultado = None
+    if request.method == 'POST':
+        folio = request.form['folio']
+        response = supabase.table("folios_registrados").select("*").eq("folio", folio).execute()
+        registros = response.data
+
+        if not registros:
+            resultado = {"estado": "No encontrado", "folio": folio}
+        else:
+            registro = registros[0]
+            fecha_expedicion = datetime.fromisoformat(registro['fecha_expedicion'])
+            fecha_vencimiento = datetime.fromisoformat(registro['fecha_vencimiento'])
+            hoy = datetime.now()
+            estado = "VIGENTE" if hoy <= fecha_vencimiento else "VENCIDO"
+
+            resultado = {
+                "estado": estado,
+                "folio": folio,
+                "fecha_expedicion": fecha_expedicion.strftime("%d/%m/%Y"),
+                "fecha_vencimiento": fecha_vencimiento.strftime("%d/%m/%Y"),
+                "marca": registro['marca'],
+                "linea": registro['linea'],
+                "año": registro['anio'],
+                "numero_serie": registro['numero_serie'],
+                "numero_motor": registro['numero_motor']
+            }
+
+        return render_template("resultado_consulta.html", resultado=resultado)
+
+    return render_template("consulta_folio.html")
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
