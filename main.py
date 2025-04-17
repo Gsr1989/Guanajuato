@@ -116,20 +116,24 @@ def registro_usuario():
         }
 
         supabase.table("folios_registrados").insert(data).execute()
-        supabase.table("verificaciondigitalcdmx").update({"folios_usados": folios["folios_usados"] + 1}).eq("id", user_id).execute()
+        supabase.table("verificaciondigitalcdmx").update({
+            "folios_usados": folios["folios_usados"] + 1
+        }).eq("id", user_id).execute()
 
         try:
             plantilla = "guanajuato.pdf"
-            output_pdf = f"documentos/{folio}.pdf"
+            output_pdf = f"static/documentos/{folio}.pdf"
             fecha_texto = fecha_expedicion.strftime("%d/%m/%Y")
             doc = fitz.open(plantilla)
             page = doc[0]
             page.insert_text((259.0, 180.0), numero_serie, fontsize=10, fontname="helv")
             page.insert_text((259.0, 396.0), fecha_texto, fontsize=10, fontname="helv")
-            os.makedirs("documentos", exist_ok=True)
+            os.makedirs("static/documentos", exist_ok=True)
             doc.save(output_pdf)
+            print(f"PDF generado: {output_pdf}")
         except Exception as e:
             flash(f'ERROR al generar el PDF (usuario): {e}', 'error')
+            print(f'EXCEPCIÓN PDF >>> {e}')
 
         flash("Folio registrado correctamente.", "success")
         return redirect(url_for('registro_usuario'))
@@ -175,16 +179,18 @@ def registro_admin():
 
         try:
             plantilla = "guanajuato.pdf"
-            output_pdf = f"documentos/{folio}.pdf"
+            output_pdf = f"static/documentos/{folio}.pdf"
             fecha_texto = fecha_expedicion.strftime("%d/%m/%Y")
             doc = fitz.open(plantilla)
             page = doc[0]
             page.insert_text((259.0, 180.0), numero_serie, fontsize=10, fontname="helv")
             page.insert_text((259.0, 396.0), fecha_texto, fontsize=10, fontname="helv")
-            os.makedirs("documentos", exist_ok=True)
+            os.makedirs("static/documentos", exist_ok=True)
             doc.save(output_pdf)
+            print(f"PDF generado: {output_pdf}")
         except Exception as e:
             flash(f'ERROR al generar el PDF (admin): {e}', 'error')
+            print(f'EXCEPCIÓN PDF >>> {e}')
 
         flash('Folio registrado correctamente.', 'success')
 
