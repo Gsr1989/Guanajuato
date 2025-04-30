@@ -6,15 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            background: url('{{ url_for('static', filename='img/fondo_grecas.png') }}') no-repeat center top;
-            background-size: cover;
+            background-color: #ffffff;
             font-family: 'Georgia', serif;
             margin: 0;
             padding: 0;
-            color: #003366;
         }
 
-        header img, footer img {
+        header img {
             width: 100%;
             display: block;
         }
@@ -24,6 +22,7 @@
             font-size: 26px;
             margin-top: 20px;
             font-weight: bold;
+            color: #003366;
         }
 
         .estado {
@@ -57,6 +56,7 @@
             max-width: 600px;
             margin: 30px auto;
             background-color: #e6f2fb;
+            color: #003366;
         }
 
         .dato {
@@ -77,6 +77,7 @@
             text-align: center;
             font-weight: bold;
             margin-top: 20px;
+            color: #003366;
         }
 
         .btn-regresar {
@@ -101,6 +102,11 @@
             background-color: #1e5b88;
         }
 
+        footer img {
+            width: 100%;
+            display: block;
+        }
+
         @media (max-width: 600px) {
             .titulo {
                 font-size: 22px;
@@ -113,47 +119,253 @@
 </head>
 <body>
 
-<header>
-    <img src="{{ url_for('static', filename='img/guerrero_logo.png') }}" alt="Encabezado">
-</header>
+    <header>
+        <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Encabezado">
+    </header>
 
-<div class="titulo">RESULTADO DE CONSULTA DIGITAL</div>
+    <div class="titulo">RESULTADO DE CONSULTA DIGITAL</div>
 
-{% if resultado.estado == "No encontrado" %}
-    <div class="estado no-encontrado">
-        FOLIO {{ resultado.folio }} : NO SE ENCUENTRA REGISTRADO
+    {% if resultado.estado == "No encontrado" %}
+        <div class="estado no-encontrado">
+            FOLIO {{ resultado.folio }} : NO SE ENCUENTRA REGISTRADO
+        </div>
+    {% elif resultado.estado == "VENCIDO" %}
+        <div class="estado vencido">
+            FOLIO {{ resultado.folio }} : VENCIDO
+        </div>
+    {% else %}
+        <div class="estado">
+            FOLIO {{ resultado.folio }} : VIGENTE
+        </div>
+    {% endif %}
+
+    {% if resultado.estado != "No encontrado" %}
+    <div class="certificado">
+        <div class="dato">
+            <strong>Fecha de Expedición:</strong>
+            {{ resultado.fecha_expedicion }}
+        </div>
+        <div class="dato">
+            <strong>Fecha de Vencimiento:</strong>
+            {{ resultado.fecha_vencimiento }}
+        </div>
+        <div class="dato">
+            <strong>Marca:</strong>
+            {{ resultado.marca }}
+        </div>
+        <div class="dato">
+            <strong>Línea:</strong>
+            {{ resultado.linea }}
+        </div>
+        <div class="dato">
+            <strong>Año:</strong>
+            {{ resultado.año }}
+        </div>
+        <div class="dato">
+            <strong>Número de Serie:</strong>
+            {{ resultado.numero_serie }}
+        </div>
+        <div class="dato">
+            <strong>Número de Motor:</strong>
+            {{ resultado.numero_motor }}
+        </div>
     </div>
-{% elif resultado.estado == "VENCIDO" %}
-    <div class="estado vencido">
-        FOLIO {{ resultado.folio }} : VENCIDO
+    {% endif %}
+
+    <div class="valido">DOCUMENTO DIGITAL VÁLIDO EN TODO MÉXICO</div>
+
+    <div class="btn-regresar">
+        <a href="{{ url_for('consulta_folio') }}">Regresar</a>
     </div>
-{% else %}
-    <div class="estado">
-        FOLIO {{ resultado.folio }} : VIGENTE
+
+    <footer>
+        <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Pie de página">
+    </footer>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado de Consulta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background-color: #ffffff;
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header img {
+            width: 100%;
+            display: block;
+        }
+
+        .titulo {
+            text-align: center;
+            font-size: 26px;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #003366;
+        }
+
+        .estado {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #003366;
+            color: white;
+        }
+
+        .vencido {
+            background-color: #b38b00 !important;
+        }
+
+        .no-encontrado {
+            background-color: #a00000 !important;
+        }
+
+        .certificado {
+            border: 2px solid #cce6f5;
+            padding: 30px 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #e6f2fb;
+            color: #003366;
+        }
+
+        .dato {
+            margin-bottom: 25px;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .dato strong {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .valido {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #003366;
+        }
+
+        .btn-regresar {
+            display: block;
+            width: 90%;
+            max-width: 600px;
+            margin: 30px auto;
+            text-align: center;
+        }
+
+        .btn-regresar a {
+            background-color: #2a72a5;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            display: inline-block;
+        }
+
+        .btn-regresar a:hover {
+            background-color: #1e5b88;
+        }
+
+        footer img {
+            width: 100%;
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .titulo {
+                font-size: 22px;
+            }
+            .estado {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Encabezado">
+    </header>
+
+    <div class="titulo">RESULTADO DE CONSULTA DIGITAL</div>
+
+    {% if resultado.estado == "No encontrado" %}
+        <div class="estado no-encontrado">
+            FOLIO {{ resultado.folio }} : NO SE ENCUENTRA REGISTRADO
+        </div>
+    {% elif resultado.estado == "VENCIDO" %}
+        <div class="estado vencido">
+            FOLIO {{ resultado.folio }} : VENCIDO
+        </div>
+    {% else %}
+        <div class="estado">
+            FOLIO {{ resultado.folio }} : VIGENTE
+        </div>
+    {% endif %}
+
+    {% if resultado.estado != "No encontrado" %}
+    <div class="certificado">
+        <div class="dato">
+            <strong>Fecha de Expedición:</strong>
+            {{ resultado.fecha_expedicion }}
+        </div>
+        <div class="dato">
+            <strong>Fecha de Vencimiento:</strong>
+            {{ resultado.fecha_vencimiento }}
+        </div>
+        <div class="dato">
+            <strong>Marca:</strong>
+            {{ resultado.marca }}
+        </div>
+        <div class="dato">
+            <strong>Línea:</strong>
+            {{ resultado.linea }}
+        </div>
+        <div class="dato">
+            <strong>Año:</strong>
+            {{ resultado.año }}
+        </div>
+        <div class="dato">
+            <strong>Número de Serie:</strong>
+            {{ resultado.numero_serie }}
+        </div>
+        <div class="dato">
+            <strong>Número de Motor:</strong>
+            {{ resultado.numero_motor }}
+        </div>
     </div>
-{% endif %}
+    {% endif %}
 
-{% if resultado.estado != "No encontrado" %}
-<div class="certificado">
-    <div class="dato"><strong>Fecha de Expedición:</strong> {{ resultado.fecha_expedicion }}</div>
-    <div class="dato"><strong>Fecha de Vencimiento:</strong> {{ resultado.fecha_vencimiento }}</div>
-    <div class="dato"><strong>Marca:</strong> {{ resultado.marca }}</div>
-    <div class="dato"><strong>Línea:</strong> {{ resultado.linea }}</div>
-    <div class="dato"><strong>Año:</strong> {{ resultado.año }}</div>
-    <div class="dato"><strong>Número de Serie:</strong> {{ resultado.numero_serie }}</div>
-    <div class="dato"><strong>Número de Motor:</strong> {{ resultado.numero_motor }}</div>
-</div>
-{% endif %}
+    <div class="valido">DOCUMENTO DIGITAL VÁLIDO EN TODO MÉXICO</div>
 
-<div class="valido">DOCUMENTO DIGITAL VÁLIDO EN TODO MÉXICO</div>
+    <div class="btn-regresar">
+        <a href="{{ url_for('consulta_folio') }}">Regresar</a>
+    </div>
 
-<div class="btn-regresar">
-    <a href="{{ url_for('consulta_folio') }}">Regresar</a>
-</div>
-
-<footer>
-    <img src="{{ url_for('static', filename='img/tlapa_logo.png') }}" alt="Pie de página">
-</footer>
+    <footer>
+        <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Pie de página">
+    </footer>
 
 </body>
 </html>
