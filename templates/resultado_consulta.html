@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            background-color: #ffffff;
+            background: url('{{ url_for('static', filename='img/fondo_grecas.png') }}') no-repeat center top;
+            background-size: cover;
             font-family: 'Georgia', serif;
             margin: 0;
             padding: 0;
+            color: #003366;
         }
 
-        header img {
+        header img, footer img {
             width: 100%;
             display: block;
         }
@@ -22,7 +24,6 @@
             font-size: 26px;
             margin-top: 20px;
             font-weight: bold;
-            color: #003366;
         }
 
         .estado {
@@ -56,7 +57,6 @@
             max-width: 600px;
             margin: 30px auto;
             background-color: #e6f2fb;
-            color: #003366;
         }
 
         .dato {
@@ -77,7 +77,6 @@
             text-align: center;
             font-weight: bold;
             margin-top: 20px;
-            color: #003366;
         }
 
         .btn-regresar {
@@ -102,11 +101,6 @@
             background-color: #1e5b88;
         }
 
-        footer img {
-            width: 100%;
-            display: block;
-        }
-
         @media (max-width: 600px) {
             .titulo {
                 font-size: 22px;
@@ -119,68 +113,47 @@
 </head>
 <body>
 
-    <header>
-        <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Encabezado">
-    </header>
+<header>
+    <img src="{{ url_for('static', filename='img/guerrero_logo.png') }}" alt="Encabezado">
+</header>
 
-    <div class="titulo">RESULTADO DE CONSULTA DIGITAL</div>
+<div class="titulo">RESULTADO DE CONSULTA DIGITAL</div>
 
-    {% if resultado.estado == "No encontrado" %}
-        <div class="estado no-encontrado">
-            FOLIO {{ resultado.folio }} : NO SE ENCUENTRA REGISTRADO
-        </div>
-    {% elif resultado.estado == "VENCIDO" %}
-        <div class="estado vencido">
-            FOLIO {{ resultado.folio }} : VENCIDO
-        </div>
-    {% else %}
-        <div class="estado">
-            FOLIO {{ resultado.folio }} : VIGENTE
-        </div>
-    {% endif %}
-
-    {% if resultado.estado != "No encontrado" %}
-    <div class="certificado">
-        <div class="dato">
-            <strong>Fecha de Expedición:</strong>
-            {{ resultado.fecha_expedicion }}
-        </div>
-        <div class="dato">
-            <strong>Fecha de Vencimiento:</strong>
-            {{ resultado.fecha_vencimiento }}
-        </div>
-        <div class="dato">
-            <strong>Marca:</strong>
-            {{ resultado.marca }}
-        </div>
-        <div class="dato">
-            <strong>Línea:</strong>
-            {{ resultado.linea }}
-        </div>
-        <div class="dato">
-            <strong>Año:</strong>
-            {{ resultado.año }}
-        </div>
-        <div class="dato">
-            <strong>Número de Serie:</strong>
-            {{ resultado.numero_serie }}
-        </div>
-        <div class="dato">
-            <strong>Número de Motor:</strong>
-            {{ resultado.numero_motor }}
-        </div>
+{% if resultado.estado == "No encontrado" %}
+    <div class="estado no-encontrado">
+        FOLIO {{ resultado.folio }} : NO SE ENCUENTRA REGISTRADO
     </div>
-    {% endif %}
-
-    <div class="valido">DOCUMENTO DIGITAL VÁLIDO EN TODO MÉXICO</div>
-
-    <div class="btn-regresar">
-        <a href="{{ url_for('consulta_folio') }}">Regresar</a>
+{% elif resultado.estado == "VENCIDO" %}
+    <div class="estado vencido">
+        FOLIO {{ resultado.folio }} : VENCIDO
     </div>
+{% else %}
+    <div class="estado">
+        FOLIO {{ resultado.folio }} : VIGENTE
+    </div>
+{% endif %}
 
-    <footer>
-        <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Pie de página">
-    </footer>
+{% if resultado.estado != "No encontrado" %}
+<div class="certificado">
+    <div class="dato"><strong>Fecha de Expedición:</strong> {{ resultado.fecha_expedicion }}</div>
+    <div class="dato"><strong>Fecha de Vencimiento:</strong> {{ resultado.fecha_vencimiento }}</div>
+    <div class="dato"><strong>Marca:</strong> {{ resultado.marca }}</div>
+    <div class="dato"><strong>Línea:</strong> {{ resultado.linea }}</div>
+    <div class="dato"><strong>Año:</strong> {{ resultado.año }}</div>
+    <div class="dato"><strong>Número de Serie:</strong> {{ resultado.numero_serie }}</div>
+    <div class="dato"><strong>Número de Motor:</strong> {{ resultado.numero_motor }}</div>
+</div>
+{% endif %}
+
+<div class="valido">DOCUMENTO DIGITAL VÁLIDO EN TODO MÉXICO</div>
+
+<div class="btn-regresar">
+    <a href="{{ url_for('consulta_folio') }}">Regresar</a>
+</div>
+
+<footer>
+    <img src="{{ url_for('static', filename='img/tlapa_logo.png') }}" alt="Pie de página">
+</footer>
 
 </body>
 </html>
