@@ -30,7 +30,7 @@
       background-color: #e6f2fb;
       border: 2px solid #cce6f5;
     }
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 12px;
       margin: 12px 0;
@@ -121,6 +121,14 @@
 </footer>
 
 <script>
+  const campos = ["folio", "marca", "linea", "anio", "serie", "motor"];
+  campos.forEach(id => {
+    const input = document.getElementById(id);
+    input.addEventListener("input", () => {
+      input.value = input.value.toUpperCase();
+    });
+  });
+
   const serieInput = document.getElementById("serie");
   const marcaInput = document.getElementById("marca");
   const lineaInput = document.getElementById("linea");
