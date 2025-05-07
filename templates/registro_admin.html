@@ -1,103 +1,85 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Registro de Folio (Admin)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            background-color: #ffffff;
-            font-family: 'Georgia', serif;
-            margin: 0;
-            padding: 0;
-            color: #003366;
-        }
-
-        header img, footer img {
-            width: 100%;
-            display: block;
-        }
-
-        .titulo {
-            text-align: center;
-            font-size: 26px;
-            margin: 30px 0 20px;
-            font-weight: bold;
-        }
-
-        .formulario {
-            max-width: 600px;
-            margin: 30px auto;
-            padding: 25px 20px;
-            border-radius: 12px;
-            background-color: #e6f2fb;
-            border: 2px solid #cce6f5;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-
-        .btn {
-            background-color: #2a72a5;
-            color: white;
-            border: none;
-            padding: 14px 22px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            margin-top: 15px;
-        }
-
-        .btn:hover {
-            background-color: #1e5b88;
-        }
-
-        .flash-message {
-            padding: 10px;
-            margin: 15px auto;
-            width: 90%;
-            max-width: 600px;
-            border-radius: 6px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .success {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .error {
-            background-color: #f44336;
-            color: white;
-        }
-
-        .acciones {
-            margin-top: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        @media (max-width: 600px) {
-            .titulo {
-                font-size: 22px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Registro de Folio (Admin)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background-color: #ffffff;
+      font-family: 'Georgia', serif;
+      margin: 0;
+      padding: 0;
+      color: #003366;
+    }
+    header img, footer img {
+      width: 100%;
+      display: block;
+    }
+    .titulo {
+      text-align: center;
+      font-size: 26px;
+      margin: 30px 0 20px;
+      font-weight: bold;
+    }
+    .formulario {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 25px 20px;
+      border-radius: 12px;
+      background-color: #e6f2fb;
+      border: 2px solid #cce6f5;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+    .btn {
+      background-color: #2a72a5;
+      color: white;
+      border: none;
+      padding: 14px 22px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      margin-top: 15px;
+    }
+    .btn:hover {
+      background-color: #1e5b88;
+    }
+    .flash-message {
+      padding: 10px;
+      margin: 15px auto;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .success { background-color: #4CAF50; color: white; }
+    .error { background-color: #f44336; color: white; }
+    .acciones {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    @media (max-width: 600px) {
+      .titulo { font-size: 22px; }
+    }
+  </style>
 </head>
 <body>
 
 <header>
-    <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Encabezado">
+  <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Encabezado">
 </header>
 
 <div class="titulo">Secretaría de Movilidad - Registro de Folio (Administrador)</div>
@@ -111,38 +93,53 @@
 {% endwith %}
 
 <form method="POST" class="formulario">
-    <input type="text" name="folio" placeholder="Folio" required>
-    <input type="text" name="marca" placeholder="Marca" required>
-    <input type="text" name="linea" placeholder="Línea" required>
-    <input type="number" name="anio" placeholder="Año" required>
-    <input type="text" name="serie" placeholder="Número de Serie" required>
-    <input type="text" name="motor" placeholder="Número de Motor" required>
+  <input type="text" name="folio" id="folio" placeholder="Folio" required>
+  <input type="text" name="marca" id="marca" placeholder="Marca" required>
+  <input type="text" name="linea" id="linea" placeholder="Línea" required>
+  <input type="number" name="anio" id="anio" placeholder="Año" required>
+  <input type="text" name="serie" id="serie" placeholder="Número de Serie" required>
+  <input type="text" name="motor" id="motor" placeholder="Número de Motor" required>
 
-    <select name="vigencia" required>
-        <option value="">Selecciona vigencia</option>
-        <option value="30">30 días</option>
-        <option value="60">60 días</option>
-        <option value="90">90 días</option>
-    </select>
+  <select name="vigencia" required>
+    <option value="">Selecciona vigencia</option>
+    <option value="30">30 días</option>
+    <option value="60">60 días</option>
+    <option value="90">90 días</option>
+  </select>
 
-    <button type="submit" class="btn">Registrar Folio</button>
+  <button type="submit" class="btn">Registrar Folio</button>
 
-    <div class="acciones">
-        <a href="{{ url_for('admin') }}">
-            <button type="button" class="btn">Volver al Panel</button>
-        </a>
-        <a href="{{ url_for('consulta_folio') }}">
-            <button type="button" class="btn">Consultar Folio</button>
-        </a>
-        <a href="{{ url_for('logout') }}">
-            <button type="button" class="btn">Cerrar Sesión</button>
-        </a>
-    </div>
+  <div class="acciones">
+    <a href="{{ url_for('admin') }}"><button type="button" class="btn">Volver al Panel</button></a>
+    <a href="{{ url_for('consulta_folio') }}"><button type="button" class="btn">Consultar Folio</button></a>
+    <a href="{{ url_for('logout') }}"><button type="button" class="btn">Cerrar Sesión</button></a>
+  </div>
 </form>
 
 <footer>
-    <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Pie de página">
+  <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Pie de página">
 </footer>
+
+<script>
+  const serieInput = document.getElementById("serie");
+  const marcaInput = document.getElementById("marca");
+  const lineaInput = document.getElementById("linea");
+  const anioInput = document.getElementById("anio");
+
+  serieInput.addEventListener("input", () => {
+    const vin = serieInput.value.trim().toUpperCase();
+    if (vin.length >= 11) {
+      fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesExtended/${vin}?format=json`)
+        .then(res => res.json())
+        .then(data => {
+          const r = data.Results[0];
+          if (r.Make) marcaInput.value = r.Make.toUpperCase();
+          if (r.Model) lineaInput.value = r.Model.toUpperCase();
+          if (r.ModelYear) anioInput.value = r.ModelYear;
+        });
+    }
+  });
+</script>
 
 </body>
 </html>
