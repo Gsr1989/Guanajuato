@@ -34,8 +34,8 @@ def generar_pdf(folio: str, numero_serie: str) -> bool:
         doc = fitz.open(plantilla)
         page = doc[0]
         # Inserta datos en plantilla
-        page.insert_text((259.0, 180.0), numero_serie, fontsize=10, fontname="helv")
-        page.insert_text((259.0, 396.0), fecha_texto, fontsize=10, fontname="helv")
+        page.insert_text((255.0, 180.0), numero_serie, fontsize=10, fontname="helv")
+        page.insert_text((255.0, 396.0), fecha_texto, fontsize=10, fontname="helv")
         doc.save(ruta_pdf)
         doc.close()
         return True
