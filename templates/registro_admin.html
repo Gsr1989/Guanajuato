@@ -82,7 +82,9 @@
   <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Encabezado">
 </header>
 
-<div class="titulo">Secretaría de Movilidad - Registro de Folio (Administrador)</div>
+<div class="titulo">
+  Secretaría de Movilidad - Registro de Folio (Administrador)
+</div>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -92,13 +94,18 @@
   {% endif %}
 {% endwith %}
 
-<form method="POST" class="formulario">
+<form method="POST" action="{{ url_for('registro_admin') }}" class="formulario">
+  <!-- Campo oculto de entidad -->
+  <input type="hidden" name="entidad" value="guanajuato">
+
   <input type="text" name="folio" id="folio" placeholder="Folio" required>
   <input type="text" name="marca" id="marca" placeholder="Marca" required>
   <input type="text" name="linea" id="linea" placeholder="Línea" required>
   <input type="number" name="anio" id="anio" placeholder="Año" required>
   <input type="text" name="serie" id="serie" placeholder="Número de Serie" required>
   <input type="text" name="motor" id="motor" placeholder="Número de Motor" required>
+  <input type="text" name="nombre" id="nombre" placeholder="Nombre del Contribuyente" required>
+  <input type="text" name="telefono" id="telefono" placeholder="Número Telefónico del Cliente" required maxlength="16">
 
   <select name="vigencia" required>
     <option value="">Selecciona vigencia</option>
@@ -110,9 +117,15 @@
   <button type="submit" class="btn">Registrar Folio</button>
 
   <div class="acciones">
-    <a href="{{ url_for('admin') }}"><button type="button" class="btn">Volver al Panel</button></a>
-    <a href="{{ url_for('consulta_folio') }}"><button type="button" class="btn">Consultar Folio</button></a>
-    <a href="{{ url_for('logout') }}"><button type="button" class="btn">Cerrar Sesión</button></a>
+    <a href="{{ url_for('admin') }}">
+      <button type="button" class="btn">Volver al Panel</button>
+    </a>
+    <a href="{{ url_for('consulta_folio') }}">
+      <button type="button" class="btn">Consultar Folio</button>
+    </a>
+    <a href="{{ url_for('logout') }}">
+      <button type="button" class="btn">Cerrar Sesión</button>
+    </a>
   </div>
 </form>
 
@@ -121,18 +134,18 @@
 </footer>
 
 <script>
-  const campos = ["folio", "marca", "linea", "anio", "serie", "motor"];
-  campos.forEach(id => {
-    const input = document.getElementById(id);
-    input.addEventListener("input", () => {
-      input.value = input.value.toUpperCase();
+  // Mayúsculas automáticas
+  ['folio','marca','linea','anio','serie','motor','nombre','telefono'].forEach(id => {
+    document.getElementById(id).addEventListener('input', e => {
+      e.target.value = e.target.value.toUpperCase();
     });
   });
 
-  const serieInput = document.getElementById("serie");
-  const marcaInput = document.getElementById("marca");
-  const lineaInput = document.getElementById("linea");
-  const anioInput = document.getElementById("anio");
+  // Autocompleta datos con VIN
+  const serieInput = document.getElementById("serie"),
+        marcaInput = document.getElementById("marca"),
+        lineaInput = document.getElementById("linea"),
+        anioInput  = document.getElementById("anio");
 
   serieInput.addEventListener("input", () => {
     const vin = serieInput.value.trim().toUpperCase();
@@ -141,10 +154,11 @@
         .then(res => res.json())
         .then(data => {
           const r = data.Results[0];
-          if (r.Make) marcaInput.value = r.Make.toUpperCase();
+          if (r.Make)  marcaInput.value = r.Make.toUpperCase();
           if (r.Model) lineaInput.value = r.Model.toUpperCase();
           if (r.ModelYear) anioInput.value = r.ModelYear;
-        });
+        })
+        .catch(() => {/* silencia errores */});
     }
   });
 </script>
