@@ -194,7 +194,7 @@ def registro_admin():
 def consulta_folio():
     resultado = None
     if request.method == 'POST':
-        folio = request.form['folio']
+        folio = request.form['folio'].strip().upper()
         row   = supabase.table("folios_registrados") \
                         .select("*").eq("folio", folio).execute().data
         if not row:
