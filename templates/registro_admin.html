@@ -128,31 +128,37 @@
 </footer>
 
 <script>
-  // Mayúsculas automáticas
-  ['folio','marca','linea','anio','serie','motor'].forEach(id => {
-    document.getElementById(id).addEventListener('input', e => {
-      e.target.value = e.target.value.toUpperCase();
+  const campos = ["folio", "marca", "linea", "anio", "serie", "motor"];
+  const inputs = {};
+  campos.forEach(id => {
+    inputs[id] = document.getElementById(id);
+    inputs[id].addEventListener("input", () => {
+      inputs[id].value = inputs[id].value.toUpperCase();
     });
   });
 
-  // Autocompleta datos con VIN
-  const serieInput = document.getElementById("serie"),
-        marcaInput = document.getElementById("marca"),
-        lineaInput = document.getElementById("linea"),
-        anioInput  = document.getElementById("anio");
-
-  serieInput.addEventListener("input", () => {
-    const vin = serieInput.value.trim().toUpperCase();
+  // Detectar VIN y rellenar con saltos
+  inputs.serie.addEventListener("input", () => {
+    const vin = inputs.serie.value.trim().toUpperCase();
     if (vin.length >= 11) {
       fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesExtended/${vin}?format=json`)
         .then(res => res.json())
         .then(data => {
           const r = data.Results[0];
-          if (r.Make)  marcaInput.value = r.Make.toUpperCase();
-          if (r.Model) lineaInput.value = r.Model.toUpperCase();
-          if (r.ModelYear) anioInput.value = r.ModelYear;
+          if (r.Make && inputs.marca.value === "") {
+            inputs.marca.value = r.Make.toUpperCase();
+            inputs.linea.focus();
+          }
+          if (r.Model && inputs.linea.value === "") {
+            inputs.linea.value = r.Model.toUpperCase();
+            inputs.anio.focus();
+          }
+          if (r.ModelYear && inputs.anio.value === "") {
+            inputs.anio.value = r.ModelYear;
+            inputs.motor.focus();
+          }
         })
-        .catch(() => {/* silencia errores */});
+        .catch(() => {});
     }
   });
 </script>
