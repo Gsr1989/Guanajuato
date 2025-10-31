@@ -221,6 +221,36 @@ def consulta_folio():
         return render_template('resultado_consulta.html', resultado=resultado)
     return render_template('consulta_folio.html')
 
+@app.route('/consulta/<folio>')
+def consulta_directa(folio):
+    """Ruta para QR dinámico - busca automáticamente el folio"""
+    folio = folio.strip().upper()
+    row = supabase.table("folios_registrados") \
+                  .select("*").eq("folio", folio).execute().data
+    
+    if not row:
+        resultado = {"estado": "No encontrado", "folio": folio}
+    else:
+        r = row[0]
+        fe = datetime.fromisoformat(r['fecha_expedicion'])
+        fv = datetime.fromisoformat(r['fecha_vencimiento'])
+        estado = "VIGENTE" if datetime.now() <= fv else "VENCIDO"
+        resultado = {
+            "estado": estado,
+            "folio": folio,
+            "fecha_expedicion": fe.strftime("%d/%m/%Y"),
+            "fecha_vencimiento": fv.strftime("%d/%m/%Y"),
+            "marca": r['marca'],
+            "linea": r['linea'],
+            "año": r['anio'],
+            "numero_serie": r['numero_serie'],
+            "numero_motor": r['numero_motor'],
+            "entidad": r.get('entidad',''),
+            "telefono": r.get('numero_telefono','')
+        }
+    
+    return render_template('resultado_consulta.html', resultado=resultado)
+
 @app.route('/admin_folios')
 def admin_folios():
     if 'admin' not in session:
