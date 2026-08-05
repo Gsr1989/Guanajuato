@@ -49,6 +49,14 @@
             background-color: #1e5b88;
         }
 
+        .btn-nuevo {
+            background-color: #0a5c36;
+        }
+
+        .btn-nuevo:hover {
+            background-color: #084a2b;
+        }
+
         @media (max-width: 600px) {
             .titulo {
                 font-size: 22px;
@@ -74,6 +82,10 @@
     <a href="{{ url_for('registro_admin') }}"><button class="btn">Registrar Folio</button></a>
     <a href="{{ url_for('consulta_folio') }}"><button class="btn">Consultar Folio</button></a>
     <a href="{{ url_for('crear_usuario') }}"><button class="btn">Crear Usuario</button></a>
+    <a href="{{ url_for('admin_folios') }}"><button class="btn">Ver Folios</button></a>
+    <a href="{{ url_for('admin_editor') }}"><button class="btn btn-nuevo">🗄️ Editor de Tablas</button></a>
+    <a href="{{ url_for('admin_fechas') }}"><button class="btn btn-nuevo">📅 Ajuste de Fechas</button></a>
+    <a href="{{ url_for('admin_timers_bot') }}"><button class="btn btn-nuevo">⏱️ Timers del Bot</button></a>
     <a href="{{ url_for('logout') }}"><button class="btn">Cerrar Sesión</button></a>
 </div>
 
