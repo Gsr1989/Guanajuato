@@ -1,15 +1,29 @@
-fastapi
-aiogram
-supabase
-PyMuPDF==1.21.1
-uvicorn
-python-multipart
-aiohttp
-Flask==2.3.3
+# FUSIÓN panel Flask + bot aiogram — sirve para CDMX, EdoMex y Morelos
+
+# --- Servidor ASGI (lo que arranca gunicorn) ---
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
 gunicorn==21.2.0
-reportlab==4.0.5
-python-dotenv==1.0.1
-qrcode==7.3.1
+a2wsgi==1.10.7
+
+# --- Panel web ---
+Flask==3.0.3
+Werkzeug==3.0.4
+Jinja2==3.1.4
+
+# --- Bot de Telegram ---
+aiogram==3.13.1
+aiohttp==3.10.5
+
+# --- Base de datos ---
+supabase==2.7.4
+httpx==0.27.2
+
+# --- PDF y QR ---
+PyMuPDF==1.24.10
+qrcode==7.4.2
+Pillow==10.4.0
+
+# --- Utilidades ---
 apscheduler==3.10.4
-openpyxl==3.1.2
-xlsxwriter==3.2.0
+python-dotenv==1.0.1
