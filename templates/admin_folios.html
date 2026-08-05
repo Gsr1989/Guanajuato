@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Folios Registrados</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background-color: #ffffff;
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+            color: #003366;
+        }
+        header img, footer img { width: 100%; display: block; }
+        .titulo {
+            text-align: center;
+            font-size: 24px;
+            margin: 24px 0 16px;
+            font-weight: bold;
+        }
+        .contenedor { max-width: 1000px; margin: 0 auto 30px; padding: 0 14px; }
+        .flash {
+            max-width: 1000px; margin: 0 auto 14px; padding: 12px 16px;
+            border-radius: 6px; font-size: 14px; text-align: center;
+        }
+        .flash.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .flash.error   { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .top-actions {
+            display: flex; justify-content: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap;
+        }
+        .btn {
+            background-color: #2a72a5; color: white; border: none; padding: 10px 18px;
+            font-size: 14px; border-radius: 8px; cursor: pointer; text-decoration: none;
+            display: inline-block; transition: background-color .2s ease;
+        }
+        .btn:hover { background-color: #1e5b88; }
+        .tabla-wrap { overflow-x: auto; border: 1px solid #cdd9e5; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead th {
+            background-color: #003366; color: white; padding: 10px 8px;
+            text-align: left; white-space: nowrap;
+        }
+        tbody td { padding: 8px; border-bottom: 1px solid #e3e9f0; vertical-align: middle; }
+        tbody tr:hover td { background-color: #f4f8fb; }
+        .badge {
+            display: inline-block; padding: 2px 9px; border-radius: 10px;
+            font-size: 11px; font-weight: bold; color: white;
+        }
+        .badge.vigente { background-color: #1a6e2e; }
+        .badge.vencido { background-color: #a02020; }
+        .badge.error   { background-color: #888; }
+        .acciones a, .acciones button {
+            font-size: 12px; padding: 5px 10px; margin-right: 4px;
+            border-radius: 5px; text-decoration: none; border: none; cursor: pointer;
+        }
+        .acc-editar   { background-color: #2a72a5; color: white; }
+        .acc-consulta { background-color: #555; color: white; }
+        .acc-eliminar { background-color: #a02020; color: white; }
+        .sin-datos { text-align: center; padding: 30px; color: #888; }
+        @media (max-width: 600px) {
+            .titulo { font-size: 20px; }
+            table { font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="{{ url_for('static', filename='Cabezaguana.jpg') }}" alt="Encabezado">
+</header>
+
+<div class="titulo">Folios Registrados — Guanajuato</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="contenedor">
+    <div class="top-actions">
+        <a href="{{ url_for('admin') }}" class="btn">← Panel</a>
+        <a href="{{ url_for('registro_admin') }}" class="btn">+ Registrar Folio</a>
+        <a href="{{ url_for('admin_editor') }}" class="btn">🗄️ Editor de Tablas</a>
+        <a href="{{ url_for('admin_fechas') }}" class="btn">📅 Ajuste de Fechas</a>
+    </div>
+
+    <div class="tabla-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Folio</th>
+                <th>Titular</th>
+                <th>Vehículo</th>
+                <th>Serie</th>
+                <th>Expedición</th>
+                <th>Vencimiento</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in folios %}
+            <tr>
+                <td><strong>{{ f.folio }}</strong></td>
+                <td>{{ f.nombre or '' }}</td>
+                <td>{{ f.marca or '' }} {{ f.linea or '' }}<br><small>{{ f.anio or '' }}</small></td>
+                <td style="font-size:11px">{{ f.numero_serie or '' }}</td>
+                <td>{{ (f.fecha_expedicion or '')[:10] }}</td>
+                <td>{{ (f.fecha_vencimiento or '')[:10] }}</td>
+                <td>
+                    {% if f.estado == 'VIGENTE' %}
+                        <span class="badge vigente">VIGENTE</span>
+                    {% elif f.estado == 'VENCIDO' %}
+                        <span class="badge vencido">VENCIDO</span>
+                    {% else %}
+                        <span class="badge error">{{ f.estado }}</span>
+                    {% endif %}
+                </td>
+                <td class="acciones">
+                    <a class="acc-editar" href="{{ url_for('editar_folio', folio=f.folio) }}">Editar</a>
+                    <a class="acc-consulta" href="{{ url_for('consulta_directa', folio=f.folio) }}" target="_blank">Ver</a>
+                    <form method="POST" action="{{ url_for('eliminar_folio') }}" style="display:inline"
+                          onsubmit="return confirm('¿Eliminar el folio {{ f.folio }}? No se puede deshacer.');">
+                        <input type="hidden" name="folio" value="{{ f.folio }}">
+                        <button class="acc-eliminar" type="submit">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="sin-datos">Sin folios registrados todavía.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<footer>
+    <img src="{{ url_for('static', filename='Piesguana.jpg') }}" alt="Pie de página">
+</footer>
+
+</body>
+</html>
