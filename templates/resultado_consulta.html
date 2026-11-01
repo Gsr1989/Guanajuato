@@ -843,6 +843,23 @@ gtag("config", "GT-5TPXBMKC");
     }
 </style>
 
+<!-- ===== ICONOS: las fuentes del sitio original no cargan desde otro dominio (CORS), se cargan desde cdnjs ===== -->
+<style id="gto-iconos-fix">
+@font-face{font-family:"Font Awesome 5 Free";font-style:normal;font-weight:900;font-display:swap;src:url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-solid-900.woff2") format("woff2")}
+@font-face{font-family:"Font Awesome 5 Free";font-style:normal;font-weight:400;font-display:swap;src:url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-regular-400.woff2") format("woff2")}
+@font-face{font-family:"Font Awesome 5 Brands";font-style:normal;font-weight:400;font-display:swap;src:url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/webfonts/fa-brands-400.woff2") format("woff2")}
+@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:900;font-display:swap;src:url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-solid-900.woff2") format("woff2")}
+@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:400;font-display:swap;src:url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-regular-400.woff2") format("woff2")}
+@font-face{font-family:"Font Awesome 6 Brands";font-style:normal;font-weight:400;font-display:swap;src:url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-brands-400.woff2") format("woff2")}
+@font-face{font-family:"FontAwesome";font-style:normal;font-weight:400;font-display:swap;src:url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/webfonts/fa-v4compatibility.woff2") format("woff2")}
+/* Iconos "ElegantIcons" del tema (lupa, flechas, cerrar) -> se dibujan con Font Awesome */
+.icon_search:before,.icon_close:before,.arrow_carrot-down:before,.arrow_carrot-up:before{font-family:"Font Awesome 6 Free","Font Awesome 5 Free" !important;font-weight:900 !important;font-style:normal !important;-webkit-font-smoothing:antialiased}
+.icon_search:before{content:"\f002" !important}
+.icon_close:before{content:"\f00d" !important}
+.arrow_carrot-down:before{content:"\f107" !important}
+.arrow_carrot-up:before{content:"\f106" !important}
+</style>
+
 </head>
 
 <body class="archive tag tag-transito-movilidad-y-transporte tag-1049 wp-theme-egovt mec-theme-egovt elementor-default elementor-kit-7" ><div class="ova-wrapp">
@@ -1597,3 +1614,5 @@ var e="script#wp-emoji-settings",t=document.querySelector(e);if(!(t instanceof H
 </script>
 	</body><!-- /body -->
 </html>
+
+
