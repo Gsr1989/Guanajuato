@@ -14,7 +14,6 @@ Los handlers y el FSM quedaron idénticos a la lógica original.
 
 from datetime import datetime, timedelta
 import asyncio
-import aiohttp
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.client.session.aiohttp import AiohttpSession
@@ -32,7 +31,7 @@ from config_guanajuato import (
     generar_subir_y_guardar_pdf,
 )
 
-_bot_session = AiohttpSession(timeout=aiohttp.ClientTimeout(total=300))
+_bot_session = AiohttpSession(timeout=300)   # int en segundos (NO aiohttp.ClientTimeout)
 bot     = Bot(token=BOT_TOKEN, session=_bot_session)
 storage = MemoryStorage()
 dp      = Dispatcher(storage=storage)
@@ -53,8 +52,31 @@ async def generar_folio_192() -> str:
 
 # ── TIMERS ────────────────────────────────────────────────────────────────────
 async def eliminar_folio_automatico(folio: str):
+    """Al vencer las 36h borra el folio SOLO si sigue PENDIENTE en la BD.
+    Ante error de red reintenta; si no puede verificar, NO borra a ciegas."""
     try:
         user_id = timers_activos.get(folio, {}).get("user_id")
+
+        estado = None
+        for _ in range(3):
+            try:
+                r = await asyncio.to_thread(lambda: supabase.table("folios_registrados")
+                    .select("estado").eq("folio", folio).execute())
+                estado = (r.data[0].get("estado") if r.data else "NO_EXISTE")
+                break
+            except Exception as e:
+                print(f"[TIMER] No pude verificar {folio}: {e}")
+                await asyncio.sleep(5)
+
+        if estado is None:
+            print(f"[TIMER] {folio}: BD inaccesible, NO se borra")
+            limpiar_timer_folio(folio)
+            return
+        if estado != "PENDIENTE":
+            print(f"[TIMER] {folio} ya está en estado {estado}, NO se borra")
+            limpiar_timer_folio(folio)
+            return
+
         await asyncio.to_thread(lambda: (
             supabase.table("folios_registrados").delete().eq("folio", folio).execute(),
             supabase.table("borradores_registros").delete().eq("folio", folio).execute(),
@@ -129,6 +151,24 @@ def cancelar_timer_folio(folio: str):
     return False
 
 
+def cancelar_todos_usuario(user_id: int) -> list:
+    """Cancela TODOS los timers de un usuario. Devuelve los folios cancelados."""
+    folios = list(user_folios.get(user_id, []))
+    cancelados = [f for f in folios if cancelar_timer_folio(f)]
+    return cancelados
+
+
+def cancelar_todos() -> list:
+    """Cancela TODOS los timers RAM de cualquier usuario (lo usa el PANEL).
+    Los timers que se creen después siguen vivos normalmente."""
+    folios = list(timers_activos.keys())
+    return [f for f in folios if cancelar_timer_folio(f)]
+
+
+BTN_CANCELAR_TODOS = InlineKeyboardButton(
+    text="🛑 Cancelar TODOS los timers", callback_data="cancelar_todos")
+
+
 def limpiar_timer_folio(folio: str):
     if folio in timers_activos:
         uid = timers_activos[folio]["user_id"]
@@ -185,7 +225,7 @@ async def _generar_y_enviar_background(chat_id: int, datos: dict,
         keyboard = InlineKeyboardMarkup(inline_keyboard=[[
             InlineKeyboardButton(text="🔑 Validar Admin",  callback_data=f"validar_{folio_final}"),
             InlineKeyboardButton(text="⏹️ Detener Timer",  callback_data=f"detener_{folio_final}")
-        ]])
+        ], [BTN_CANCELAR_TODOS]])
 
         await bot.send_document(
             chat_id, FSInputFile(pdf_path),
@@ -307,6 +347,7 @@ async def banamex_cmd(message: types.Message, state: FSMContext):
                 texto += f"Folio: {f}\n(sin timer)\n\n"
             botones.append([InlineKeyboardButton(
                 text=f"⏹️ Detener timer {f}", callback_data=f"detener_{f}")])
+        botones.append([BTN_CANCELAR_TODOS])
         await message.answer(texto.strip(),
                              reply_markup=InlineKeyboardMarkup(inline_keyboard=botones))
         await message.answer(
@@ -456,6 +497,45 @@ async def callback_detener_timer(callback: CallbackQuery):
         await callback.answer("❌ Timer ya no está activo", show_alert=True)
 
 
+@dp.callback_query(lambda c: c.data == "cancelar_todos")
+async def callback_cancelar_todos(callback: CallbackQuery):
+    n = len(obtener_folios_usuario(callback.from_user.id))
+    if n == 0:
+        await callback.answer("ℹ️ No tienes timers activos", show_alert=True); return
+    kb = InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text="✅ Sí, cancelar todos", callback_data="cancelar_todos_si"),
+        InlineKeyboardButton(text="❌ No",                 callback_data="cancelar_todos_no"),
+    ]])
+    await callback.message.answer(
+        f"🛑 ¿Cancelar los {n} timers activos?\n\n"
+        f"Los folios NO se borran: quedan sin timer de eliminación.", reply_markup=kb)
+    await callback.answer()
+
+
+@dp.callback_query(lambda c: c.data == "cancelar_todos_no")
+async def callback_cancelar_todos_no(callback: CallbackQuery):
+    await callback.message.edit_reply_markup(reply_markup=None)
+    await callback.answer("Operación cancelada")
+
+
+@dp.callback_query(lambda c: c.data == "cancelar_todos_si")
+async def callback_cancelar_todos_si(callback: CallbackQuery):
+    folios = cancelar_todos_usuario(callback.from_user.id)
+    if folios:
+        try:
+            now = datetime.now().isoformat()
+            await asyncio.to_thread(lambda: supabase.table("folios_registrados").update(
+                {"estado": "TIMER_DETENIDO", "fecha_detencion": now}
+            ).in_("folio", folios).execute())
+        except Exception as e:
+            print(f"Error BD cancelar todos: {e}")
+    await callback.message.edit_reply_markup(reply_markup=None)
+    await callback.answer("✅ Listo", show_alert=True)
+    await callback.message.answer(
+        f"⏹️ TIMERS CANCELADOS: {len(folios)}\n\n"
+        f"📋 Para generar otro permiso use /banamex")
+
+
 @dp.message(lambda m: m.text and m.text.strip().upper().startswith("SERO"))
 async def admin_detener_timer(message: types.Message):
     texto = message.text.strip().upper()
@@ -584,6 +664,7 @@ async def ver_folios_activos(message: types.Message):
             lista.append(f"• {folio} (sin timer)")
         botones.append([InlineKeyboardButton(
             text=f"⏹️ Detener {folio}", callback_data=f"detener_{folio}")])
+    botones.append([BTN_CANCELAR_TODOS])
     await message.answer(
         f"📋 FOLIOS GUANAJUATO ACTIVOS ({len(folios)})\n\n" + '\n'.join(lista) +
         f"\n\n⏰ Timer {HORAS_TIMER_BOT}h por folio.\n📸 Envía imagen para comprobante.\n\n"
