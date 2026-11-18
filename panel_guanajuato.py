@@ -938,14 +938,32 @@ def admin_timers_bot():
         logger.error(f"[TIMERS BOT] {e}")
         activos = []
 
+    def esc(v):
+        return _html.escape(str(v), quote=True)
+
+    # El nombre lo escribe el usuario del bot: SIEMPRE escapado
     filas = "".join(
-        f"<tr><td><strong>{t['folio']}</strong></td><td>{t['nombre']}</td>"
-        f"<td>{t['restante']}</td>"
-        f"<td><form method='POST' action='/admin/timer_bot_detener/{t['folio']}' style='display:inline'>"
-        f"<button class='del' onclick=\"return confirm('¿Detener timer de {t['folio']}?')\">Detener</button>"
+        f"<tr><td><strong>{esc(t['folio'])}</strong></td><td>{esc(t['nombre'])}</td>"
+        f"<td>{esc(t['restante'])}</td>"
+        f"<td><form method='POST' action='/admin/timer_bot_detener/{esc(t['folio'])}' style='display:inline'>"
+        f"<button class='del' onclick=\"return confirm('¿Detener timer de {esc(t['folio'])}?')\">Detener</button>"
         f"</form></td></tr>"
         for t in activos
     ) or "<tr><td colspan='4' style='text-align:center;color:#999;padding:22px'>Sin timers activos</td></tr>"
+
+    msg = request.args.get('msg', '').strip()
+    msg_html = (f'<div class="nota" style="border-left-color:#0a5c36">{esc(msg)}</div>'
+                if msg else "")
+
+    boton_todos = ""
+    if activos:
+        boton_todos = (
+            "<form method='POST' action='/admin/timers_bot/detener_todos' style='margin-bottom:14px'>"
+            f"<button class='btn' style='background:#c0392b;color:#fff' "
+            f"onclick=\"return confirm('¿Detener TODOS los timers ({len(activos)})?\\n\\n"
+            f"Los folios NO se borran, solo se detienen los timers.')\">"
+            f"🛑 Detener TODOS los timers ({len(activos)})</button></form>"
+        )
 
     return Response(_editor_head("Timers del Bot") + f"""
 <div class="bar">⏱️ Timers del Bot — Guanajuato
@@ -953,14 +971,36 @@ def admin_timers_bot():
 </div>
 <div class="wrap">
   <div class="nota">
-    Timers de 36h de los folios generados por el bot de Telegram. Ahora que el
-    bot y el panel corren en el mismo servicio, puedes detenerlos desde aquí.
+    Timers de 36h de los folios generados por el bot de Telegram (solo en memoria:
+    si Render reinicia, se pierden). Puedes detenerlos uno por uno o todos a la vez,
+    sin importar de qué usuario de Telegram sean.
   </div>
+  {msg_html}
+  {boton_todos}
   <div class="tabla-wrap">
     <table><thead><tr><th>Folio</th><th>Titular</th><th>Restante</th><th>Acción</th></tr></thead>
     <tbody>{filas}</tbody></table>
   </div>
 </div></body></html>""", mimetype="text/html")
+
+
+@app.route('/admin/timers_bot/detener_todos', methods=['POST'])
+def admin_timers_bot_detener_todos():
+    if not session.get('admin'):
+        return redirect(url_for('login'))
+    try:
+        import bot_guanajuato
+        folios = bot_guanajuato.cancelar_todos()
+        if folios:
+            supabase.table("folios_registrados").update({
+                "estado": "TIMER_DETENIDO",
+                "fecha_detencion": datetime.now().isoformat(),
+            }).in_("folio", folios).execute()
+        msg = f"Timers detenidos: {len(folios)}"
+    except Exception as e:
+        logger.error(f"[TIMERS BOT] detener todos: {e}")
+        msg = f"Error: {e}"
+    return redirect(url_for('admin_timers_bot', msg=msg))
 
 
 @app.route('/admin/timer_bot_detener/<folio>', methods=['POST'])
